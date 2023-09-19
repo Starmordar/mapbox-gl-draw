@@ -3,10 +3,16 @@ import * as Constants from './constants';
 
 const classTypes = ['mode', 'feature', 'mouse'];
 
+/* Buttons structure steps
+*  1. Add ability to create new buttons with API
+*  2. Expose default buttons array for user
+*  3. Add ability to re-order buttons
+*  4. Override default buttons behaviour
+*  5. Validate buttons from options
+*/
+
 export default function(ctx) {
-
-
-  const buttonElements = {};
+  const buttonElements = Object.assign({}, ctx.options.buttons);
   let activeButton = null;
 
   let currentMapClasses = {
@@ -104,6 +110,18 @@ export default function(ctx) {
     controlGroup.className = `${Constants.classes.CONTROL_GROUP} ${Constants.classes.CONTROL_BASE}`;
 
     if (!controls) return controlGroup;
+
+    for (const key in buttonElements) {
+      const buttonCopy = buttonElements[key];
+
+      buttonElements[key] = createControlButton(key, {
+        container: controlGroup,
+        className: buttonCopy.className || '',
+        title: buttonCopy.title || '',
+        onActivate: () => buttonCopy.onActivate(ctx),
+        onDeactivate: () => buttonCopy.onDeactivate(ctx),
+      });
+    }
 
     if (controls[Constants.types.LINE]) {
       buttonElements[Constants.types.LINE] = createControlButton(Constants.types.LINE, {

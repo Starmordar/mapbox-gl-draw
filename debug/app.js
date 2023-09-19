@@ -36,7 +36,31 @@ map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 const modes = MapboxDraw.modes;
 modes.static = StaticMode;
-const Draw = window.Draw = new MapboxDraw({ modes });
+
+const buttons = {
+  'draw-polygon-1': {
+    title: 'Custom button 1',
+    className: 'custom-button-1',
+    onActivate: (ctx) => {
+      console.log('activate button ctx :>> ', ctx);
+      // ctx.events.changeMode('Draw Rectangle');
+    },
+  },
+  'draw-polygon-2': {
+    title: 'Custom button 2',
+    className: 'custom-button-2',
+    onActivate: (ctx) => {
+      console.log('activate button ctx :>> ', ctx);
+      // ctx.events.changeMode('Draw Rectangle');
+    },
+    onDeactivate: (ctx) => {
+      console.log('deactivate button ctx :>> ', ctx);
+      ctx.events.trash();
+    }
+  }
+};
+
+const Draw = window.Draw = new MapboxDraw({ modes, buttons });
 let drawIsActive = true;
 map.addControl(Draw, 'bottom-right');
 
