@@ -4,15 +4,15 @@ import * as Constants from './constants';
 const classTypes = ['mode', 'feature', 'mouse'];
 
 /* Buttons structure steps
-*  1. Add ability to create new buttons with API
+*  1. (d) Add ability to create new buttons with API
 *  2. Expose default buttons array for user
 *  3. Add ability to re-order buttons
 *  4. Override default buttons behaviour
-*  5. Validate buttons from options
+*  5. (d) Validate buttons from options
 */
 
 export default function(ctx) {
-  const buttonElements = Object.assign({}, ctx.options.buttons);
+  const buttonElements = {};
   let activeButton = null;
 
   let currentMapClasses = {
@@ -104,6 +104,11 @@ export default function(ctx) {
     }
   }
 
+  function filterButtons(buttons) {
+    if (!buttons || !Array.isArray(buttons)) return [];
+    return buttons.filter(btn => btn && btn.key && btn.title && typeof btn.onActivate === 'function');
+  }
+
   function addButtons() {
     const controls = ctx.options.controls;
     const controlGroup = document.createElement('div');
@@ -111,17 +116,15 @@ export default function(ctx) {
 
     if (!controls) return controlGroup;
 
-    for (const key in buttonElements) {
-      const buttonCopy = buttonElements[key];
-
-      buttonElements[key] = createControlButton(key, {
+    filterButtons(ctx.options.buttons).forEach((btn) => {
+      buttonElements[btn.key] = createControlButton(btn.key, {
         container: controlGroup,
-        className: buttonCopy.className || '',
-        title: buttonCopy.title || '',
-        onActivate: () => buttonCopy.onActivate(ctx),
-        onDeactivate: () => buttonCopy.onDeactivate(ctx),
+        className: btn.className || '',
+        title: btn.title,
+        onActivate: () => btn.onActivate(ctx),
+        onDeactivate: () => btn.onDeactivate(ctx),
       });
-    }
+    });
 
     if (controls[Constants.types.LINE]) {
       buttonElements[Constants.types.LINE] = createControlButton(Constants.types.LINE, {

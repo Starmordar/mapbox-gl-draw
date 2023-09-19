@@ -37,8 +37,9 @@ map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 const modes = MapboxDraw.modes;
 modes.static = StaticMode;
 
-const buttons = {
-  'draw-polygon-1': {
+const buttons = [
+  {
+    key: 'draw-polygon-1',
     title: 'Custom button 1',
     className: 'custom-button-1',
     onActivate: (ctx) => {
@@ -46,7 +47,8 @@ const buttons = {
       // ctx.events.changeMode('Draw Rectangle');
     },
   },
-  'draw-polygon-2': {
+  {
+    key: 'draw-polygon-2',
     title: 'Custom button 2',
     className: 'custom-button-2',
     onActivate: (ctx) => {
@@ -58,7 +60,7 @@ const buttons = {
       ctx.events.trash();
     }
   }
-};
+];
 
 const Draw = window.Draw = new MapboxDraw({ modes, buttons });
 let drawIsActive = true;
